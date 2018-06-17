@@ -24,7 +24,8 @@ namespace AIMapGenerator {
     public static int randomAnswersetNumber = 1;
     #endregion
     #region General Settings
-    public static string encodingFolder = @"C:\Users\Francesco\Desktop\AIMapGenerator\AIMapGenerator\encodings\";
+    public static string encodingFolder = @"Assets\encodings\";
+    public static string solver = @"Assets\solvers\clingo.exe";
     public static int minRoomSize = 50;
     public static int minDistanceWall = 3;
     public static float pruningPercentage = 0.05f;
@@ -41,6 +42,8 @@ namespace AIMapGenerator {
     [MenuItem("AIMapGenerator/AIMapGenerator")]
     public static void ShowWindow() {
       EditorWindow.GetWindow(typeof(MapGeneratorLayout));
+      encodingFolder = Application.dataPath + @"/encodings/";
+      solver = Application.dataPath + @"/solvers/clingo.exe";
     }
 
     void OnGUI() {
@@ -57,6 +60,15 @@ namespace AIMapGenerator {
         encodingFolder = encodingFolder + "\\";
       }
       GUILayout.EndHorizontal();
+
+      GUILayout.BeginHorizontal();
+      solver = EditorGUILayout.TextField("Solver: ", solver);
+      if (GUILayout.Button("Browse")) {
+        solver = EditorUtility.OpenFilePanel("Select solver", "", "").Replace("/", "\\");
+      }
+      GUILayout.EndHorizontal();
+
+
       minRoomSize = EditorGUILayout.IntSlider("minRoomSize", minRoomSize, 0, rowSize * columnSize);
       minDistanceWall = EditorGUILayout.IntSlider("Distance from wall", minDistanceWall, 0, 15);
       pruningPercentage = EditorGUILayout.Slider("Pruning percentage", pruningPercentage, 0, 1);
@@ -119,7 +131,8 @@ namespace AIMapGenerator {
       columnSize = 10;
       randomSeed = 1;
       randomAnswersetNumber = 1;
-      encodingFolder = @"C:\Users\Francesco\Desktop\AIMapGenerator\AIMapGenerator\encodings\";
+      encodingFolder = Application.dataPath + @"/encodings/";
+      solver = Application.dataPath + @"/solvers/clingo.exe";
       minRoomSize = 50;
       minDistanceWall = 3;
       pruningPercentage = 0.05f;

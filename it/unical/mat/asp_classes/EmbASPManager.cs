@@ -8,6 +8,7 @@
 	using ASPMapper = it.unical.mat.embasp.languages.asp.ASPMapper;
 	using DesktopHandler = it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 	using ClingoDesktopService = it.unical.mat.embasp.specializations.clingo.desktop.ClingoDesktopService;
+  using AIMapGenerator;
 
   public class EmbASPManager
 	{
@@ -19,7 +20,7 @@
 		}
 
 
-		private readonly string solverPath = @"C:\Users\Francesco\Desktop\AIMapGenerator\AIMapGenerator\libs\clingo.exe";
+		private readonly string solverPath = MapGeneratorLayout.solver;
 		private Handler handler;
 		private InputProgram input = new ASPInputProgram();
 
