@@ -10,13 +10,7 @@
 % OUTPUT:
 %   - "cell/3" the values already present in the partition plus the new values computed by this program, in the form of "cell(Row,Column,Content)"
 
-free_cells(X,Y) :- row(X), col(Y), min_row(MnR), max_row(MxR), min_col(MnC), max_col(MxC), X > MnR, X < MxR, Y > MnC, Y < MxC.
+cell(X,Y,"wall") :- row(X), col(Y), min_row(MnR), max_row(MxR), min_col(MnC), max_col(MxC), X > MnR, X < MxR, Y > MnC, Y < MxC.
 
-cell(X,Y,"wall") :- free_cells(X,Y).
-
+% Needed by clingo
 #show cell/3.
-#show new_door/3.
-#show object_assignment6/6.
-#show connected8/8.
-#show assignment5/5.
-#show partition4/4.

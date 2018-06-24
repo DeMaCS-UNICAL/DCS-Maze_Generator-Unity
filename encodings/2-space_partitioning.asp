@@ -11,38 +11,39 @@
 %   - "cell/3" the values already present in the partition plus the new values computed by this program, in the form of "cell(Row,Column,Content)"
 %   - "new_door/3" the position of the new horizontal door, in the form of "new_door(Row,Column,Type)"
 
-% No porte sui muri
-unavailable_cells(X,Y) :- row(X), col(Y), min_row(X).
-unavailable_cells(X,Y) :- row(X), col(Y), min_col(Y).
-unavailable_cells(X,Y) :- row(X), col(Y), max_row(X).
-unavailable_cells(X,Y) :- row(X), col(Y), max_col(Y).
+% Avoid door on the border walls (not needed thanks to the next roles and since min_distance_wall is always >= 0)
+% unavailable_cells(X,Y) :- row(X), col(Y), min_row(X).
+% unavailable_cells(X,Y) :- row(X), col(Y), min_col(Y).
+% unavailable_cells(X,Y) :- row(X), col(Y), max_row(X).
+% unavailable_cells(X,Y) :- row(X), col(Y), max_col(Y).
 
-% Minima distanza tra porta e muri
+% Avoid door on cells too close to the wall
 unavailable_cells(X,Y) :- min_distance_wall(D), row(X), col(Y), min_row(H), X-H<=D.
 unavailable_cells(X,Y) :- min_distance_wall(D), row(X), col(Y), min_col(W), Y-W<=D.
 unavailable_cells(X,Y) :- min_distance_wall(D), row(X), col(Y), max_row(H), H-X<=D.
 unavailable_cells(X,Y) :- min_distance_wall(D), row(X), col(Y), max_col(W), W-Y<=D.
 
-% Non ci sono altre porte su stessa riga/colonna
+% Avoid door that create a wall to another door (i.e. on the same row/col)
 unavailable_cells(X,Y) :- cell(X,_,"vdoor"), col(Y), orientation(horizontal).
 unavailable_cells(X,Y) :- cell(_,Y,"hdoor"), row(X), orientation(vertical).
 
+% Identify the cells where we can insert a door
+free_cells(X,Y) :- row(X), col(Y), not unavailable_cells(X,Y).
 
+% Select the door type depending on the value of "orientation/1"
 door_type("hdoor") :- orientation(horizontal).
 door_type("vdoor") :- orientation(vertical).
 
-free_cells(X,Y) :- row(X), col(Y), not unavailable_cells(X,Y).
-
+% Choose the position of the new door
 1={new_door(X,Y,Dtype) : free_cells(X,Y)}=1 :- door_type(Dtype).
 
+% Derive the new value of the cell
 cell(X,Y,Dtype) :- new_door(X,Y,_), door_type(Dtype).
+
+% Build a wall from the door to the borders of the partition
 cell(X,Y2,"wall") :- new_door(X,Y1,_), col(Y2), Y1!=Y2, orientation(horizontal), Y2<MAX, Y2>MIN, min_col(MIN), max_col(MAX).
 cell(X2,Y,"wall") :- new_door(X1,Y,_), row(X2), X1!=X2, orientation(vertical), X2<MAX, X2>MIN, min_row(MIN), max_row(MAX).
 
+% Needed by clingo
 #show cell/3.
 #show new_door/3.
-#show object_assignment6/6.
-#show connected8/8.
-#show assignment5/5.
-#show partition4/4.
-    

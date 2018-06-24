@@ -13,4 +13,5 @@ cell(X,Y,wall) :- col(Y), max_row(X).
 cell(X,1,wall) :- row(X).
 cell(X,Y,wall) :- row(X), max_col(Y).
 
+% Needed by clingo
 #show cell/3.
